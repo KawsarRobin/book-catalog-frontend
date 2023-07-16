@@ -41,6 +41,13 @@ export default function Navbar() {
                   <Link to="/products">Books</Link>
                 </Button>
               </li>
+              {user.email && (
+                <li>
+                  <Button variant="link" asChild>
+                    <Link to="/addBook">Add Book</Link>
+                  </Button>
+                </li>
+              )}
               <li>
                 <Button variant="link" asChild>
                   <Link to="/checkout">Checkout</Link>

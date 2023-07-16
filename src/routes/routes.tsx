@@ -1,12 +1,13 @@
-import { createBrowserRouter } from 'react-router-dom';
 import App from '@/App';
+import AddBook from '@/pages/AddBook';
+import Checkout from '@/pages/Checkout';
+import Home from '@/pages/Home';
 import Login from '@/pages/Login';
 import NotFound from '@/pages/NotFound';
-import Home from '@/pages/Home';
-import Products from '@/pages/Products';
-import Checkout from '@/pages/Checkout';
-import Signup from '@/pages/Signup';
 import ProductDetails from '@/pages/ProductDetails';
+import Products from '@/pages/Products';
+import Signup from '@/pages/Signup';
+import { createBrowserRouter } from 'react-router-dom';
 
 const routes = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const routes = createBrowserRouter([
         path: '/checkout',
         element: <Checkout />,
       },
+      {
+        path: '/addBook',
+        element: <AddBook />,
+      },
     ],
   },
   {
@@ -39,6 +44,7 @@ const routes = createBrowserRouter([
     path: '/signup',
     element: <Signup />,
   },
+
   {
     path: '*',
     element: <NotFound />,

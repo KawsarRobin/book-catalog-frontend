@@ -1,32 +1,32 @@
+import { FiSend } from 'react-icons/fi';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
-import { FiSend } from 'react-icons/fi';
 
-const dummyComments = [
-  'Bhalo na',
-  'Ki shob ghori egula??',
-  'Eta kono product holo ??',
-  '200 taka dibo, hobe ??',
-];
+// const dummyComments = [
+//   'Bhalo na',
+//   'Ki shob ghori egula??',
+//   'Eta kono product holo ??',
+//   '200 taka dibo, hobe ??',
+// ];
 
-export default function ProductReview() {
+export default function ProductReview(reviews: string[]) {
   return (
-    <div className="max-w-7xl mx-auto mt-5">
-      <div className="flex gap-5 items-center">
+    <div className="mx-auto mt-5 max-w-7xl">
+      <div className="flex items-center gap-5">
         <Textarea className="min-h-[30px]" />
         <Button className="rounded-full h-10 w-10 p-2 text-[25px]">
           <FiSend />
         </Button>
       </div>
       <div className="mt-10">
-        {dummyComments.map((comment, index) => (
-          <div key={index} className="flex gap-3 items-center mb-5">
+        {reviews?.map((review: string, index: number) => (
+          <div key={index} className="flex items-center gap-3 mb-5">
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <p>{comment}</p>
+            <p>{review}</p>
           </div>
         ))}
       </div>

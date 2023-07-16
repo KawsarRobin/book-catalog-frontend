@@ -1,23 +1,22 @@
 import { Link } from 'react-router-dom';
+import logo from '../assets/images/technet-logo.png';
+import Cart from '../components/Cart';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Button } from '../components/ui/button';
-import { DropdownMenuSeparator } from '../components/ui/dropdown-menu';
-import { DropdownMenuLabel } from '../components/ui/dropdown-menu';
 import {
-  DropdownMenuItem,
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
-import { HiOutlineSearch } from 'react-icons/hi';
-import Cart from '../components/Cart';
-import logo from '../assets/images/technet-logo.png';
 
 export default function Navbar() {
   return (
-    <nav className="w-full h-16 fixed top backdrop-blur-lg z-10">
-      <div className="h-full w-full bg-white/60">
-        <div className="flex items-center justify-between w-full md:max-w-7xl h-full mx-auto ">
+    <nav className="fixed z-10 w-full h-16 top backdrop-blur-lg">
+      <div className="w-full h-full bg-white/60">
+        <div className="flex items-center justify-between w-full h-full mx-auto md:max-w-7xl ">
           <div>
             <img className="h-8" src={logo} alt="log" />
           </div>
@@ -30,7 +29,7 @@ export default function Navbar() {
               </li>
               <li>
                 <Button variant="link" asChild>
-                  <Link to="/products">Products</Link>
+                  <Link to="/products">Books</Link>
                 </Button>
               </li>
               <li>
@@ -39,10 +38,15 @@ export default function Navbar() {
                 </Button>
               </li>
               <li>
+                <Button variant="link" asChild>
+                  <Link to="/signup">SignUp</Link>
+                </Button>
+              </li>
+              {/* <li>
                 <Button variant="ghost">
                   <HiOutlineSearch size="25" />
                 </Button>
-              </li>
+              </li> */}
               <li>
                 <Cart />
               </li>

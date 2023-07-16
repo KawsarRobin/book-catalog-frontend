@@ -1,29 +1,57 @@
-'use client';
-
 import * as React from 'react';
+('use client');
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+import { useSignUpMutation } from '@/redux/features/user/userApi';
+import { useForm } from 'react-hook-form';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
+interface SignUpFormInputs {
+  email: string;
+  password: string;
+  confirmPassword?: string;
+}
 export function SignupForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormInputs>();
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
-    setIsLoading(true);
+  const [signUpMutation, { isLoading, isError, isSuccess }] =
+    useSignUpMutation();
+  // const signUpMutation = useSignUpMutation();
+  const handleSignUp = async (data: SignUpFormInputs) => {
+    try {
+      const result = await signUpMutation(data);
+      console.log(result?.data?.message);
+      if (result?.error) {
+        alert(result?.error?.data?.message);
+      } else {
+        alert(result?.data?.message);
+      }
+    } catch (error) {
+      alert('There is an error');
+    }
+  };
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }
+  const onSubmit = (data: SignUpFormInputs) => {
+    console.log(data);
+    if (data.password !== data.confirmPassword) {
+      alert('password not matched');
+    } else {
+      const formData = { email: data.email, password: data.password };
+      handleSignUp(formData);
+    }
+  };
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
@@ -36,29 +64,31 @@ export function SignupForm({ className, ...props }: UserAuthFormProps) {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading}
+              {...register('email', { required: 'Email is required' })}
             />
+            {errors.email && <p>{errors.email.message}</p>}
             <Input
               id="password"
               placeholder="your password"
               type="password"
               autoCapitalize="none"
               autoCorrect="off"
-              disabled={isLoading}
+              {...register('password', { required: 'Password is required' })}
             />
+            {errors.password && <p>{errors.password.message}</p>}
             <Input
               id="password"
               placeholder="confirm password"
               type="password"
               autoCapitalize="none"
               autoCorrect="off"
-              disabled={isLoading}
+              {...register('confirmPassword', {
+                required: 'Confirm Password is required',
+              })}
             />
+            {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
           </div>
-          <Button disabled={isLoading}>
-            {isLoading && <p>loading</p>}
-            Create Account
-          </Button>
+          <Button>Create Account</Button>
         </div>
       </form>
       <div className="relative">
@@ -66,13 +96,17 @@ export function SignupForm({ className, ...props }: UserAuthFormProps) {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
+          <span className="px-2 bg-background text-muted-foreground">
             Or continue with
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
-        {isLoading ? <p>loading</p> : <p>GitHub</p>}
+      <Button
+        variant="outline"
+        type="button"
+        className="flex items-center justify-between"
+      >
+        <p>Google</p>
       </Button>
     </div>
   );

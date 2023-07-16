@@ -6,8 +6,7 @@ import userReducer from './features/user/userSlice';
 
 const store = configureStore({
   reducer: {
-    // cart: cartReducer,
-    product: bookReducer,
+    book: bookReducer,
     user: userReducer,
     [api.reducerPath]: api.reducer,
   },

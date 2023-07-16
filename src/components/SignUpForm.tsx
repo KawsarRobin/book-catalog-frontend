@@ -24,7 +24,6 @@ export function SignupForm({ className, ...props }: UserAuthFormProps) {
 
   const [signUpMutation, { isLoading, isError, isSuccess }] =
     useSignUpMutation();
-  // const signUpMutation = useSignUpMutation();
   const handleSignUp = async (data: SignUpFormInputs) => {
     try {
       const result = await signUpMutation(data);

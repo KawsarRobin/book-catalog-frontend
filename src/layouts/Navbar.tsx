@@ -1,3 +1,5 @@
+import { setLogoutUser } from '@/redux/features/user/userSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { Link } from 'react-router-dom';
 import logo from '../assets/images/technet-logo.png';
 import Cart from '../components/Cart';
@@ -13,6 +15,13 @@ import {
 } from '../components/ui/dropdown-menu';
 
 export default function Navbar() {
+  const { user } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+  //handle log out
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    dispatch(setLogoutUser());
+  };
   return (
     <nav className="fixed z-10 w-full h-16 top backdrop-blur-lg">
       <div className="w-full h-full bg-white/60">
@@ -37,11 +46,23 @@ export default function Navbar() {
                   <Link to="/checkout">Checkout</Link>
                 </Button>
               </li>
-              <li>
-                <Button variant="link" asChild>
-                  <Link to="/signup">SignUp</Link>
-                </Button>
-              </li>
+              <div>
+                {!user.email ? (
+                  <li>
+                    <Button variant="link" asChild>
+                      <Link to="/signup">SignUp</Link>
+                    </Button>
+                  </li>
+                ) : (
+                  <li>
+                    <Button variant="link" asChild>
+                      <Link to="" onClick={handleLogout}>
+                        Logout
+                      </Link>
+                    </Button>
+                  </li>
+                )}
+              </div>
               {/* <li>
                 <Button variant="ghost">
                   <HiOutlineSearch size="25" />

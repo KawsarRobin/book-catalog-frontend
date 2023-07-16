@@ -1,15 +1,17 @@
 'use client';
 
-import * as React from 'react';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { useLogInMutation } from '@/redux/features/user/userApi';
+import { setLoginUser } from '@/redux/features/user/userSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { FcGoogle } from 'react-icons/fc';
 import { useNavigate } from 'react-router-dom';
+import { decodeAccessToken } from '../lib/jwthelper';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -25,18 +27,24 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormInputs>();
-
+  const { user } = useAppSelector((state) => state.user);
   const [logInMutation, { isLoading, isError, isSuccess }] = useLogInMutation();
-
+  const dispatch = useAppDispatch();
   const handleLogIn = async (data: LoginFormInputs) => {
     try {
       const result = await logInMutation(data);
-      console.log(result);
+      console.log(result.data.data.accessToken);
       if (result?.error) {
         alert(result?.error?.data?.message);
       } else {
+        const accessToken = result?.data?.data?.accessToken;
+        if (accessToken) {
+          localStorage.setItem('accessToken', accessToken);
+        }
+        const user = decodeAccessToken(accessToken);
+        console.log(user);
+        dispatch(setLoginUser(user?.userEmail!));
         alert(result?.data?.message);
-        navigate('/');
       }
     } catch (error) {
       alert('There is an error');
@@ -49,11 +57,11 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
     console.log(formData);
   };
 
-  // useEffect(() => {
-  //   if (user.email && !isLoading) {
-  //     navigate('/');
-  //   }
-  // }, [user.email, isLoading]);
+  React.useEffect(() => {
+    if (user.email && !isLoading) {
+      navigate('/');
+    }
+  }, [user.email, isLoading, navigate]);
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>

@@ -12,7 +12,7 @@ const initialState: IBook = {
 };
 
 const bookSlice = createSlice({
-  name: 'product',
+  name: 'book',
   initialState,
   reducers: {
     toggleState: (state) => {

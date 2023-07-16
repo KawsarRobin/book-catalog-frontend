@@ -2,28 +2,62 @@
 
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+import { useLogInMutation } from '@/redux/features/user/userApi';
+import { useForm } from 'react-hook-form';
+import { FcGoogle } from 'react-icons/fc';
+import { useNavigate } from 'react-router-dom';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
+interface LoginFormInputs {
+  email: string;
+  password: string;
+}
+
 export function LoginForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInputs>();
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
-    setIsLoading(true);
+  const [logInMutation, { isLoading, isError, isSuccess }] = useLogInMutation();
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }
+  const handleLogIn = async (data: LoginFormInputs) => {
+    try {
+      const result = await logInMutation(data);
+      console.log(result);
+      if (result?.error) {
+        alert(result?.error?.data?.message);
+      } else {
+        alert(result?.data?.message);
+        navigate('/');
+      }
+    } catch (error) {
+      alert('There is an error');
+    }
+  };
+
+  const onSubmit = (data: LoginFormInputs) => {
+    const formData = { email: data.email, password: data.password };
+    handleLogIn(formData);
+    console.log(formData);
+  };
+
+  // useEffect(() => {
+  //   if (user.email && !isLoading) {
+  //     navigate('/');
+  //   }
+  // }, [user.email, isLoading]);
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
@@ -36,21 +70,20 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading}
+              {...register('email', { required: 'Email is required' })}
             />
+            {errors.email && <p>{errors.email.message}</p>}
             <Input
               id="password"
               placeholder="your password"
               type="password"
               autoCapitalize="none"
               autoComplete="password"
-              disabled={isLoading}
+              {...register('password', { required: 'Password is required' })}
             />
+            {errors.password && <p>{errors.password.message}</p>}
           </div>
-          <Button disabled={isLoading}>
-            {isLoading && <p>loading</p>}
-            Login with Email
-          </Button>
+          <Button>Login with email</Button>
         </div>
       </form>
       <div className="relative">
@@ -58,13 +91,18 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
+          <span className="px-2 bg-background text-muted-foreground">
             Or continue with
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
-        {isLoading ? <p>loading</p> : <p>GitHub</p>}
+      <Button
+        variant="outline"
+        type="button"
+        className="flex items-center justify-between"
+      >
+        <p>Google</p>
+        <FcGoogle />
       </Button>
     </div>
   );

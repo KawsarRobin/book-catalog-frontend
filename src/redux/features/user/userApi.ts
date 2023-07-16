@@ -10,7 +10,7 @@ const userApi = api.injectEndpoints({
       }),
     }),
     logIn: builder.mutation({
-      query: ({ data }) => ({
+      query: (data) => ({
         url: `/users/login`,
         method: 'POST',
         body: data,

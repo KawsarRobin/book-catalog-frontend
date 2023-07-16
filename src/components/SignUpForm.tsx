@@ -24,10 +24,11 @@ export function SignupForm({ className, ...props }: UserAuthFormProps) {
 
   const [signUpMutation, { isLoading, isError, isSuccess }] =
     useSignUpMutation();
+
+  //handle signUp
   const handleSignUp = async (data: SignUpFormInputs) => {
     try {
       const result = await signUpMutation(data);
-      console.log(result?.data?.message);
       if (result?.error) {
         alert(result?.error?.data?.message);
       } else {

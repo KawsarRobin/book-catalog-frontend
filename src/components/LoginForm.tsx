@@ -14,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 import { decodeAccessToken } from '../lib/jwthelper';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
-
 interface LoginFormInputs {
   email: string;
   password: string;
@@ -28,8 +27,10 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
     formState: { errors },
   } = useForm<LoginFormInputs>();
   const { user } = useAppSelector((state) => state.user);
-  const [logInMutation, { isLoading, isError, isSuccess }] = useLogInMutation();
+  const [logInMutation, { isLoading }] = useLogInMutation();
   const dispatch = useAppDispatch();
+
+  //handle login
   const handleLogIn = async (data: LoginFormInputs) => {
     try {
       const result = await logInMutation(data);
@@ -43,7 +44,7 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
         }
         const user = decodeAccessToken(accessToken);
         console.log(user);
-        dispatch(setLoginUser(user?.userEmail!));
+        dispatch(setLoginUser(user?.userEmail));
         alert(result?.data?.message);
       }
     } catch (error) {
